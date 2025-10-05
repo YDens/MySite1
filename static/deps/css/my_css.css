@@ -18,6 +18,17 @@ body::before {
     z-index: -1; /* Помещаем под контент */
 }
 
+
+/*                 мое                     */
+
+.container-fluid {
+    padding-left: 100px;
+    padding-right: 100px;
+}
+
+/*                 мое                     */
+
+
 .dropdown-toggle::after {
   content: none;
 }
@@ -47,3 +58,4 @@ body::before {
   border-radius: 15px;
   font-size: 0.7rem;
 }
+
