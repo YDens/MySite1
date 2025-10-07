@@ -56,6 +56,7 @@
                                 width="30" 
                                 height="30"
                                 style="object-fit: cover;">
+                                
                             </a>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item  text-white" href="carts/cart.html">Корзина</a></li>
@@ -73,11 +74,71 @@
             </div>
         </nav>
     </header>
-    <div id="map" class="flex-fill" >
-        <script src="https://api-maps.yandex.ru/2.1/?apikey=f62206d2-d8fa-4d07-9243-1c6ae523ba7a&lang=ru_RU" type="text/javascript"></script>
-        <script type="text/javascript">
-            ymaps.ready(initMyMap);
+
+    <div id="map" class="flex-fill" ></div>
+
+    <div class="offcanvas offcanvas-start offcanvas-map" tabindex="-1" id="mapSidebar">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title">Информация о точке</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div class="mb-3">
+                <strong>Координаты:</strong>
+                <div class="mt-1">
+                    <span class="badge bg-secondary" id="coordLat"></span>
+                    <span class="badge bg-secondary" id="coordLng"></span>
+                </div>
+            </div>
             
+            <form id="pointForm">
+                <div class="mb-3">
+                    <label class="form-label">Название точки</label>
+                    <input type="text" class="form-control" id="pointName" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Описание</label>
+                    <textarea class="form-control" id="pointDescription" rows="3"></textarea>
+                </div>
+                
+                
+            </form>
+            <button id='SaveButton' class="btn btn-primary w-100">Сохранить</button>
+        </div>
+    </div>
+
+
+ 
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=f62206d2-d8fa-4d07-9243-1c6ae523ba7a&lang=ru_RU" type="text/javascript"></script>
+        <script type="text/javascript">
+            
+            class MapMarker {
+                constructor(name, coord1, coord2) {
+                    this.name = name;
+                    this.coord1 = coord1;
+                    this.coord2 = coord2;
+                }
+
+                // Методы класса
+                getInfo() {
+                    return `${this.name} (${this.coord1}), ${this.coord2} лет`;
+                }
+                
+                getCoodrs() {
+                    return [this.coord1, this.coord2];
+
+                }
+            }
+            
+            markers = [];
+            markers.push(
+                new MapMarker( "Храм Василия Блаженного", 55.749792, 37.632495),
+                new MapMarker( "Парк Горького", 55.744007, 37.606671)
+            );
+            
+            ymaps.ready(initMyMap);
+        
             function initMyMap() {
                 const myMap = new ymaps.Map("map", {
                     center: [55.76, 37.64], // Координаты центра
@@ -86,25 +147,65 @@
 
                 });
                 
-                // Метка с кастомной иконкой
+
+                for (let i = 0; i < markers.length; i++) {
+                    myMap.geoObjects.add(    new ymaps.Placemark(    markers[i].getCoodrs(), {},{preset: 'islands#redIcon'}   )    );
+                }
+
+                let MymapSidebar = null;
+                var myPlacemark = null;
+                var currentloc;
+                let myCoords = null;
+
                 myMap.events.add('click', function (e) {
+                    currentloc = 0;
                     // Получаем координаты клика
-                    var coords = e.get('coords');
-                    
+                    myCoords = e.get('coords');
+                    document.getElementById('coordLat').textContent = myCoords[0];
+                    document.getElementById('coordLng').textContent = myCoords[1];
                     // Добавляем метку в эту точку
-                    var myPlacemark = new ymaps.Placemark(coords, {
-                        balloonContent: 'Координаты: ' + coords[0].toFixed(6) + ', ' + coords[1].toFixed(6)
+                    myPlacemark = new ymaps.Placemark(myCoords, {
+                        balloonContent: 'Координаты: ' + myCoords[0].toFixed(6) + ', ' + myCoords[1].toFixed(6)}, {
+                        preset: 'islands#redIcon'
                     });
                     
                     myMap.geoObjects.add(myPlacemark);
+
+                    var mapSidebar = document.getElementById('mapSidebar');
+                    MymapSidebar = new bootstrap.Offcanvas(mapSidebar);
+
+                    MymapSidebar.show();  // Добавляет класс 'show'
+                    
+             
+ 
                 });
                 
-            
+                document.getElementById('mapSidebar').addEventListener('hide.bs.offcanvas', function () {
+                    if (currentloc == 0) {
+                        myMap.geoObjects.remove(myPlacemark);
+                        myPlacemark = null;
+                    }
+                }); 
+
+                document.getElementById('SaveButton').addEventListener('click', function () {
+                    
+                    myMap.geoObjects.add(new ymaps.Placemark([myCoords[0], myCoords[1]], {}, {preset: 'islands#redIcon'}));
+                    
+                    currentloc = 1;
+                    MymapSidebar.hide();
+                    
+                    
+                }); 
 
             }
+
+            
+
+
+
         </script>
-    </div>
- 
+
+
     <script src="{% static "deps/js/jquery/jquery-3.7.0.min.js" %}"></script>
     <script src="{% static "deps/js/jquery-events.js" %}"></script>
     <script src="{% static "deps/js/jquery-ajax.js" %}"></script>
