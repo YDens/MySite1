@@ -2,117 +2,143 @@
 
 <!DOCTYPE html>
 <html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="{% static "deps/css/bootstrap/bootstrap.min.css" %}"> 
+        <link rel="stylesheet" href="{% static "deps/css/my_css.css" %}"> 
+        <link rel="apple-touch-icon" sizes="180x180" href="{% static "deps/favicon/Browse-icon_512x512.png" %}"> 
+        <link rel="icon" type="image/png" sizes="32x32" href="{% static "deps/favicon/Browse-icon_32x32.png" %}"> 
+        <link rel="icon" type="image/png" sizes="16x16" href="{% static "deps/favicon/Browse-icon_16x16.png" %}"> 
+        <link rel="manifest" href="{% static "deps/favicon/site.webmanifest" %}">
+        <title>Home</title>
+    </head>
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static "deps/css/bootstrap/bootstrap.min.css" %}">
-    <link rel="stylesheet" href="{% static "deps/css/my_css.css" %}">
- 
-    <link rel="apple-touch-icon" sizes="180x180" href="{% static "deps/favicon/Browse-icon_512x512.png" %}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{% static "deps/favicon/Browse-icon_32x32.png" %}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{% static "deps/favicon/Browse-icon_16x16.png" %}">
-    <link rel="manifest" href="{% static "deps/favicon/site.webmanifest" %}">
-    <title>Home</title>
-</head>
-
-<body class='d-flex flex-column min-vh-100'>
-    <header>
-        <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
-            <div class="container-fluid">
-                <a class="navbar-brand" href=" {% url "main:index" %}">Карта твоих туалетов</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="d-flex flex-row-reverse" id="navbarSupportedContent">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0" >
-                        <li class="nav-item dropdown ">
-                            <a class="nav-link dropdown-toggle text-white" href="#" role="button"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                                Информация
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item  text-white" href="#">Доставка и оплата</a></li>
-                                <li><a class="dropdown-item  text-white" href="#">Контактная информация</a></li>
-                                <li><a class="dropdown-item  text-white" href="#">Про нас</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link  text-white" href="carts/cart.html">Корзина</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link  text-white" href="users/login.html">Войти</a>
-                        </li>
-                        <li class="nav-item dropdown ">
-                            <a class="nav-link dropdown-toggle text-white" href="#" role="button"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                                Мой профиль
-                                <img class="mx-1 rounded-circle" 
-                                src="{% static 'deps/images/baseavatar.jpg' %}" 
-                                alt="Catalog Icon" 
-                                width="30" 
-                                height="30"
-                                style="object-fit: cover;">
-                                
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item  text-white" href="carts/cart.html">Корзина</a></li>
-                                <li><a class="dropdown-item  text-white" href="users/profile.html">Личный кабинет</a>
-                                </li>
-                                <li><a class="dropdown-item  text-white" href="#">Админ панель</a></li>
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
-                                <li><a class="dropdown-item  text-white" href="#">Выйти</a></li>
-                            </ul>
-                        </li>
-                    </ul>
+    <body class="d-flex flex-column min-vh-100">
+        <header>
+            <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="{% url 'main:index' %}">Карта твоих туалетов</a>
+                    <button
+                        class="navbar-toggler"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#navbarSupportedContent"
+                        aria-controls="navbarSupportedContent"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation"
+                    >
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="d-flex flex-row-reverse" id="navbarSupportedContent">
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item dropdown">
+                                <a
+                                    class="nav-link dropdown-toggle text-white"
+                                    href="#"
+                                    role="button"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false"
+                                >
+                                    Информация
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item text-white" href="#">Доставка и оплата</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item text-white" href="#">Контактная информация</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item text-white" href="#">Про нас</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="carts/cart.html">Корзина</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="users/login.html">Войти</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a
+                                    class="nav-link dropdown-toggle text-white"
+                                    href="#"
+                                    role="button"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false"
+                                >
+                                    Мой профиль
+                                    <img
+                                        class="mx-1 rounded-circle"
+                                        src="{% static 'deps/images/baseavatar.jpg' %}"
+                                        alt="Catalog Icon"
+                                        width="30"
+                                        height="30"
+                                        style="object-fit: cover"
+                                    />
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item text-white" href="carts/cart.html">Корзина</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item text-white" href="users/profile.html">Личный кабинет</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item text-white" href="#">Админ панель</a>
+                                    </li>
+                                    <li>
+                                        <hr class="dropdown-divider" />
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item text-white" href="#">Выйти</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
+            </nav>
+        </header>
+
+        <div id="map" class="flex-fill"></div>
+
+        <div class="offcanvas offcanvas-start offcanvas-map" tabindex="-1" id="mapSidebar">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title">Информация о точке</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
             </div>
-        </nav>
-    </header>
-
-    <div id="map" class="flex-fill" ></div>
-
-    <div class="offcanvas offcanvas-start offcanvas-map" tabindex="-1" id="mapSidebar">
-        <div class="offcanvas-header">
-            <h5 class="offcanvas-title">Информация о точке</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
-        </div>
-        <div class="offcanvas-body">
-            <div class="mb-3">
-                <strong>Координаты:</strong>
-                <div class="mt-1">
-                    <span class="badge bg-secondary" id="coordLat"></span>
-                    <span class="badge bg-secondary" id="coordLng"></span>
+            <div class="offcanvas-body">
+                <div class="mb-3">
+                    <strong>Координаты:</strong>
+                    <div class="mt-1">
+                        <span class="badge bg-secondary" id="coordLat"></span>
+                        <span class="badge bg-secondary" id="coordLng"></span>
+                    </div>
                 </div>
+
+                <form id="pointForm">
+                    <div class="mb-3">
+                        <label class="form-label">Название точки</label>
+                        <input type="text" class="form-control" id="pointName" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Описание</label>
+                        <textarea class="form-control" id="pointDescription" rows="3"></textarea>
+                    </div>
+                </form>
+                <button id="SaveButton" class="btn btn-primary w-100">Сохранить</button>
             </div>
-            
-            <form id="pointForm">
-                <div class="mb-3">
-                    <label class="form-label">Название точки</label>
-                    <input type="text" class="form-control" id="pointName" required>
-                </div>
-                
-                <div class="mb-3">
-                    <label class="form-label">Описание</label>
-                    <textarea class="form-control" id="pointDescription" rows="3"></textarea>
-                </div>
-                
-                
-            </form>
-            <button id='SaveButton' class="btn btn-primary w-100">Сохранить</button>
         </div>
-    </div>
 
-
- 
-    <script src="https://api-maps.yandex.ru/2.1/?apikey=f62206d2-d8fa-4d07-9243-1c6ae523ba7a&lang=ru_RU" type="text/javascript"></script>
+        <script
+            src="https://api-maps.yandex.ru/2.1/?apikey=f62206d2-d8fa-4d07-9243-1c6ae523ba7a&lang=ru_RU"
+            type="text/javascript"
+        ></script>
         <script type="text/javascript">
-            
             class MapMarker {
                 constructor(name, coord1, coord2) {
                     this.name = name;
@@ -120,43 +146,48 @@
                     this.coord2 = coord2;
                 }
 
-                // Методы класса
                 getInfo() {
                     return `${this.name} (${this.coord1}), ${this.coord2} лет`;
                 }
-                
+
                 getCoodrs() {
                     return [this.coord1, this.coord2];
-
                 }
             }
-            
-            markers = [];
+
+            var markers = [];
             markers.push(
-                new MapMarker( "Храм Василия Блаженного", 55.749792, 37.632495),
-                new MapMarker( "Парк Горького", 55.744007, 37.606671)
+                new MapMarker('Храм Василия Блаженного', 55.749792, 37.632495),
+                new MapMarker('Парк Горького', 55.744007, 37.606671)
             );
-            
+
             ymaps.ready(initMyMap);
-        
+
             function initMyMap() {
-                const myMap = new ymaps.Map("map", {
+                myMap = new ymaps.Map('map', {
                     center: [55.76, 37.64], // Координаты центра
                     zoom: 15, // Масштаб
-                    controls: ['zoomControl'] // Элементы управления
-
+                    controls: ['zoomControl'], // Элементы управления
                 });
-                
 
+                loadAllMarkers();
+                clickToMap();
+            }
+
+            function loadAllMarkers() {
                 for (let i = 0; i < markers.length; i++) {
-                    myMap.geoObjects.add(    new ymaps.Placemark(    markers[i].getCoodrs(), {},{preset: 'islands#redIcon'}   )    );
+                    myMap.geoObjects.add(
+                        new ymaps.Placemark(markers[i].getCoodrs(), {}, { preset: 'islands#redIcon' })
+                    );
                 }
+            }
 
-                let MymapSidebar = null;
-                var myPlacemark = null;
-                var currentloc;
-                let myCoords = null;
+            var MymapSidebar;
+            var myPlacemark;
+            var currentloc;
+            var myCoords;
 
+            function clickToMap() {
                 myMap.events.add('click', function (e) {
                     currentloc = 0;
                     // Получаем координаты клика
@@ -164,52 +195,46 @@
                     document.getElementById('coordLat').textContent = myCoords[0];
                     document.getElementById('coordLng').textContent = myCoords[1];
                     // Добавляем метку в эту точку
-                    myPlacemark = new ymaps.Placemark(myCoords, {
-                        balloonContent: 'Координаты: ' + myCoords[0].toFixed(6) + ', ' + myCoords[1].toFixed(6)}, {
-                        preset: 'islands#redIcon'
-                    });
-                    
+                    myPlacemark = new ymaps.Placemark(
+                        myCoords,
+                        {
+                            balloonContent: 'Координаты: ' + myCoords[0].toFixed(6) + ', ' + myCoords[1].toFixed(6),
+                        },
+                        {
+                            preset: 'islands#redIcon',
+                        }
+                    );
+
                     myMap.geoObjects.add(myPlacemark);
 
                     var mapSidebar = document.getElementById('mapSidebar');
                     MymapSidebar = new bootstrap.Offcanvas(mapSidebar);
 
-                    MymapSidebar.show();  // Добавляет класс 'show'
-                    
-             
- 
+                    MymapSidebar.show();
                 });
-                
-                document.getElementById('mapSidebar').addEventListener('hide.bs.offcanvas', function () {
-                    if (currentloc == 0) {
-                        myMap.geoObjects.remove(myPlacemark);
-                        myPlacemark = null;
-                    }
-                }); 
-
-                document.getElementById('SaveButton').addEventListener('click', function () {
-                    
-                    myMap.geoObjects.add(new ymaps.Placemark([myCoords[0], myCoords[1]], {}, {preset: 'islands#redIcon'}));
-                    
-                    currentloc = 1;
-                    MymapSidebar.hide();
-                    
-                    
-                }); 
-
             }
 
-            
+            document.getElementById('mapSidebar').addEventListener('hide.bs.offcanvas', function () {
+                if (currentloc == 0) {
+                    myMap.geoObjects.remove(myPlacemark);
+                    myPlacemark = null;
+                }
+            });
 
-
-
+            document.getElementById('SaveButton').addEventListener('click', function () {
+                myMap.geoObjects.add(
+                    new ymaps.Placemark([myCoords[0], myCoords[1]], {}, { preset: 'islands#redIcon' })
+                );
+                markers.push(new MapMarker(document.getElementById('pointName').value, myCoords[0], myCoords[1]));
+                currentloc = 1;
+                MymapSidebar.hide();
+                document.getElementById('pointName').value = '';
+            });
         </script>
 
-
-    <script src="{% static "deps/js/jquery/jquery-3.7.0.min.js" %}"></script>
-    <script src="{% static "deps/js/jquery-events.js" %}"></script>
-    <script src="{% static "deps/js/jquery-ajax.js" %}"></script>
-    <script src="{% static "deps/js/bootstrap/bootstrap.bundle.min.js" %}"></script>
-</body>
-
+        <script src="{% static 'deps/js/jquery/jquery-3.7.0.min.js' %}"></script>
+        <script src="{% static 'deps/js/jquery-events.js' %}"></script>
+        <script src="{% static 'deps/js/jquery-ajax.js' %}"></script>
+        <script src="{% static 'deps/js/bootstrap/bootstrap.bundle.min.js' %}"></script>
+    </body>
 </html>
