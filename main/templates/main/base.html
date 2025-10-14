@@ -157,8 +157,7 @@
 
             var markers = [];
             markers.push(
-                new MapMarker('Храм Василия Блаженного', 55.749792, 37.632495),
-                new MapMarker('Парк Горького', 55.744007, 37.606671)
+                new MapMarker('Парк Горького', 55.744007, 37.606671),
             );
 
             ymaps.ready(initMyMap);
@@ -180,6 +179,14 @@
                         new ymaps.Placemark(markers[i].getCoodrs(), {}, { preset: 'islands#redIcon' })
                     );
                 }
+                {% for toilet in toilets %}
+ 
+                    let toiletCoords = [{{toilet.coords1|stringformat:'f' }} , {{toilet.coords2|stringformat:'f' }}];
+
+                    myMap.geoObjects.add(
+                        new ymaps.Placemark(toiletCoords , {}, { preset: 'islands#redIcon' })
+                    );
+                {% endfor %}
             }
 
             var MymapSidebar;
