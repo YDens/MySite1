@@ -1,5 +1,5 @@
-{% load static %}
-
+{% load static %} 
+{% csrf_token %}
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -12,6 +12,8 @@
         <link rel="icon" type="image/png" sizes="32x32" href="{% static "deps/favicon/Browse-icon_32x32.png" %}"> 
         <link rel="icon" type="image/png" sizes="16x16" href="{% static "deps/favicon/Browse-icon_16x16.png" %}"> 
         <link rel="manifest" href="{% static "deps/favicon/site.webmanifest" %}">
+
+
         <title>Home</title>
     </head>
 
@@ -87,7 +89,7 @@
                                         <a class="dropdown-item text-white" href="users/profile.html">Личный кабинет</a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item text-white" href="#">Админ панель</a>
+                                        <a class="dropdown-item text-white" href="{% url 'admin:index' %}">Админ панель</a>
                                     </li>
                                     <li>
                                         <hr class="dropdown-divider" />
@@ -105,9 +107,11 @@
 
         <div id="map" class="flex-fill"></div>
 
-        <div class="offcanvas offcanvas-start offcanvas-map" tabindex="-1" id="mapSidebar">
+
+        {% comment %} creating point sidebar {% endcomment %}
+        <div class="offcanvas offcanvas-start offcanvas-map" tabindex="-1" id="creatingMapSidebar">
             <div class="offcanvas-header">
-                <h5 class="offcanvas-title">Информация о точке</h5>
+                <h5 class="offcanvas-title">Создать точку</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
             </div>
             <div class="offcanvas-body">
@@ -134,109 +138,131 @@
             </div>
         </div>
 
+        {% comment %} created point sidebar {% endcomment %}
+        <div class="offcanvas offcanvas-start offcanvas-map" tabindex="-1" id="mapSidebar">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title fs-3" id="pointName2"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+            </div>
+            <div class="offcanvas-body">
+                <form id="pointForm2">
+                    <div class="mb-3">
+                        <img src="" class="img-thumbnail" >
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <script
             src="https://api-maps.yandex.ru/2.1/?apikey=f62206d2-d8fa-4d07-9243-1c6ae523ba7a&lang=ru_RU"
             type="text/javascript"
         ></script>
         <script type="text/javascript">
-            class MapMarker {
-                constructor(name, coord1, coord2) {
-                    this.name = name;
-                    this.coord1 = coord1;
-                    this.coord2 = coord2;
-                }
 
-                getInfo() {
-                    return `${this.name} (${this.coord1}), ${this.coord2} лет`;
-                }
 
-                getCoodrs() {
-                    return [this.coord1, this.coord2];
-                }
-            }
-
-            var markers = [];
-            markers.push(
-                new MapMarker('Парк Горького', 55.744007, 37.606671),
-            );
 
             ymaps.ready(initMyMap);
 
+            let myMap;
             function initMyMap() {
                 myMap = new ymaps.Map('map', {
-                    center: [55.76, 37.64], // Координаты центра
-                    zoom: 15, // Масштаб
-                    controls: ['zoomControl'], // Элементы управления
+                    center: [55.76, 37.64],
+                    zoom: 15,
+                    controls: ['zoomControl'],
                 });
 
                 loadAllMarkers();
                 clickToMap();
             }
 
-            function loadAllMarkers() {
-                for (let i = 0; i < markers.length; i++) {
-                    myMap.geoObjects.add(
-                        new ymaps.Placemark(markers[i].getCoodrs(), {}, { preset: 'islands#redIcon' })
-                    );
-                }
-                {% for toilet in toilets %}
- 
-                    let toiletCoords = [{{toilet.coords1|stringformat:'f' }} , {{toilet.coords2|stringformat:'f' }}];
+            let toiletCoords = [];
+            let myPlacemark;
+            let creatingMapSidebar;
+            let mapSidebar;
+            let myCoords;
+            let currentloc;
 
-                    myMap.geoObjects.add(
-                        new ymaps.Placemark(toiletCoords , {}, { preset: 'islands#redIcon' })
-                    );
-                {% endfor %}
+            document.addEventListener('DOMContentLoaded', function() {
+                creatingMapSidebar = new bootstrap.Offcanvas(document.getElementById('creatingMapSidebar'));
+                mapSidebar = new bootstrap.Offcanvas(document.getElementById('mapSidebar'));
+            });
+
+            function initialPlacemarkClick(placemark) {
+                placemark.events.add('click', function(e) {
+                    
+                    const target = e.get('target');
+                    myCoords = target.geometry.getCoordinates();
+
+                    document.getElementById('pointName2').textContent = target.properties.get('hintContent');
+                    
+                    mapSidebar.show();
+
+                });
             }
 
-            var MymapSidebar;
-            var myPlacemark;
-            var currentloc;
-            var myCoords;
+            function loadAllMarkers() {
+                {% for toilet in toilets %}
+                    toiletCoords = [{{toilet.coords1|stringformat:'f' }} , {{toilet.coords2|stringformat:'f' }}];
+
+                    myPlacemark = new ymaps.Placemark(toiletCoords , {hintContent: "{{ toilet.name }}" }, { preset: 'islands#redIcon', openHintOnHover: false });
+                    initialPlacemarkClick(myPlacemark);
+                    myMap.geoObjects.add(myPlacemark);
+
+                {% endfor %}
+            }
 
             function clickToMap() {
                 myMap.events.add('click', function (e) {
                     currentloc = 0;
-                    // Получаем координаты клика
                     myCoords = e.get('coords');
-                    document.getElementById('coordLat').textContent = myCoords[0];
-                    document.getElementById('coordLng').textContent = myCoords[1];
-                    // Добавляем метку в эту точку
-                    myPlacemark = new ymaps.Placemark(
-                        myCoords,
-                        {
-                            balloonContent: 'Координаты: ' + myCoords[0].toFixed(6) + ', ' + myCoords[1].toFixed(6),
-                        },
-                        {
-                            preset: 'islands#redIcon',
-                        }
-                    );
-
+                    
+                    myPlacemark = new ymaps.Placemark([myCoords[0].toFixed(6), myCoords[1].toFixed(6)], {}, {preset: 'islands#redIcon', openHintOnHover: false});
+                    initialPlacemarkClick(myPlacemark);
                     myMap.geoObjects.add(myPlacemark);
+                    
+                    document.getElementById('coordLat').textContent = myCoords[0].toFixed(6);
+                    document.getElementById('coordLng').textContent = myCoords[1].toFixed(6);
 
-                    var mapSidebar = document.getElementById('mapSidebar');
-                    MymapSidebar = new bootstrap.Offcanvas(mapSidebar);
-
-                    MymapSidebar.show();
+                    creatingMapSidebar.show();
                 });
             }
-
-            document.getElementById('mapSidebar').addEventListener('hide.bs.offcanvas', function () {
+                                        
+            document.getElementById('creatingMapSidebar').addEventListener('hide.bs.offcanvas', function () {
                 if (currentloc == 0) {
                     myMap.geoObjects.remove(myPlacemark);
                     myPlacemark = null;
                 }
+                document.getElementById('pointName').value = '';
+                document.getElementById('coordLat').textContent = '';
+                document.getElementById('coordLng').textContent = '';
+            });
+            document.getElementById('mapSidebar').addEventListener('hide.bs.offcanvas', function () {
+
+                document.getElementById('pointName2').textContent = '';
             });
 
+            function getCsrfToken() {
+                return document.querySelector('[name=csrfmiddlewaretoken]').value;
+            }
+
             document.getElementById('SaveButton').addEventListener('click', function () {
-                myMap.geoObjects.add(
-                    new ymaps.Placemark([myCoords[0], myCoords[1]], {}, { preset: 'islands#redIcon' })
-                );
-                markers.push(new MapMarker(document.getElementById('pointName').value, myCoords[0], myCoords[1]));
-                currentloc = 1;
-                MymapSidebar.hide();
+                if (pointName.value != "") {
+                    fetch('api/create-toilet/', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json', 'X-CSRFToken': getCsrfToken()},
+                        body: JSON.stringify({name: pointName.value, coords1: myCoords[0].toFixed(6), coords2: myCoords[1].toFixed(6)})
+                    });
+
+                    myPlacemark.properties.set('hintContent', pointName.value);
+                    currentloc = 1;
+                }
+
+                creatingMapSidebar.hide();
                 document.getElementById('pointName').value = '';
+                document.getElementById('coordLat').textContent = '';
+                document.getElementById('coordLng').textContent = '';
             });
+
         </script>
 
         <script src="{% static 'deps/js/jquery/jquery-3.7.0.min.js' %}"></script>
