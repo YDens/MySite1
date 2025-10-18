@@ -1,5 +1,5 @@
 {% load static %} 
-{% csrf_token %}
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -124,6 +124,7 @@
                 </div>
 
                 <form id="pointForm">
+                    {% csrf_token %}
                     <div class="mb-3">
                         <label class="form-label">Название точки</label>
                         <input type="text" class="form-control" id="pointName" required />
@@ -144,10 +145,18 @@
                 <h5 class="offcanvas-title fs-3" id="pointName2"></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
             </div>
-            <div class="offcanvas-body">
+            <div class="offcanvas-body d-flex flex-column">
+                <form id="pointForm2" class="flex-grow-1">
+                    <div class="mb-3">
+                        <!-- Ваше содержимое формы -->
+                    </div>
+                </form>
+                <div class="p-3 bg-dark text-white flex-grow-1 d-flex flex-column gap-2" id="commentsConteiner">
+                    
+                </div>
                 <form id="pointForm2">
                     <div class="mb-3">
-                        <img src="" class="img-thumbnail" >
+                        
                     </div>
                 </form>
             </div>
@@ -188,7 +197,7 @@
             });
 
             function initialPlacemarkClick(placemark) {
-                placemark.events.add('click', function(e) {
+                placemark.events.add('click', async function(e) {
                     
                     const target = e.get('target');
                     myCoords = target.geometry.getCoordinates();
@@ -197,6 +206,19 @@
                     
                     mapSidebar.show();
 
+                    let comments = await getComments(target.properties.get('hintContent'));
+
+                    let container = document.getElementById('commentsConteiner');
+                    
+                    let link;
+                    for (let i = 0; i < comments.length; ++i) {
+                        link = document.createElement('a');
+                        //link.className = 'bg-light';
+                        link.textContent = comments[i].text;
+                        
+                        container.appendChild(link);
+                    }
+
                 });
             }
 
@@ -204,7 +226,7 @@
                 {% for toilet in toilets %}
                     toiletCoords = [{{toilet.coords1|stringformat:'f' }} , {{toilet.coords2|stringformat:'f' }}];
 
-                    myPlacemark = new ymaps.Placemark(toiletCoords , {hintContent: "{{ toilet.name }}" }, { preset: 'islands#redIcon', openHintOnHover: false });
+                    myPlacemark = new ymaps.Placemark(toiletCoords , {hintContent: "{{ toilet.name }}"}, { preset: 'islands#redIcon', openHintOnHover: false });
                     initialPlacemarkClick(myPlacemark);
                     myMap.geoObjects.add(myPlacemark);
 
@@ -239,6 +261,8 @@
             document.getElementById('mapSidebar').addEventListener('hide.bs.offcanvas', function () {
 
                 document.getElementById('pointName2').textContent = '';
+                let container = document.getElementById('commentsConteiner');
+                container.innerHTML = '';
             });
 
             function getCsrfToken() {
@@ -262,6 +286,21 @@
                 document.getElementById('coordLat').textContent = '';
                 document.getElementById('coordLng').textContent = '';
             });
+
+            async function getComments(currentToilet) {
+                let params = new URLSearchParams({
+                    'currentToilet': currentToilet,
+                });
+
+                let result0 = await fetch(`api/comments_api/?${params}`);
+                let result1 = await result0.json();
+
+                return result1;
+            }
+
+
+
+
 
         </script>
 

@@ -3,11 +3,12 @@ from django.http import HttpResponse, JsonResponse
 import json
 from django.views.decorators.csrf import csrf_exempt
 
-from main.models import Toilets
+from main.models import Toilets, Comments
 
 def index(request):
 
     toilets = Toilets.objects.all()
+
 
     context = {
         'toilets': toilets
@@ -28,3 +29,20 @@ def toilet_api(request):
             coords2=data['coords2']
         )
         return JsonResponse({'id': toilet.id, 'success': True})
+
+
+def comments_api(request):
+    x = request.GET.get('currentToilet')
+    currentToilet = Toilets.objects.filter(name=x)[0]
+    comments = Comments.objects.filter(toilet=currentToilet)
+    print(currentToilet)
+    commentsList = []
+    for comment in comments:
+        oneComm = {
+            'text': comment.text,
+        }
+        commentsList.append(oneComm)
+
+    return JsonResponse(commentsList, safe=False)
+
+
