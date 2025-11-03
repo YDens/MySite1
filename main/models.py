@@ -34,3 +34,18 @@ class Comments(models.Model):
 
     def __str__(self):
         return f'{self.toilet} comment {self.id}'
+    
+
+class Reviews(models.Model):
+    
+    estimation = models.IntegerField(verbose_name='оценка')
+    toilet = models.ForeignKey(to=Toilets, on_delete=models.CASCADE, verbose_name='Туалет')
+
+    class Meta:
+        db_table = 'reviews'
+        verbose_name = 'Отзыв'
+        verbose_name_plural= 'Отзывы'
+
+
+    def __str__(self):
+        return f'{self.toilet} review {self.estimation}'

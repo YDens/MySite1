@@ -1,6 +1,24 @@
 {% load static %} 
 
 <!DOCTYPE html>
+
+<style>
+.hover-change {
+    transition: all 0.3s ease;
+    transform-origin: center;
+    will-change: transform;
+}
+
+.hover-change:hover {
+    content: url("{% static 'deps/images/star_yellow.png' %}");
+}
+
+.Change {
+    content: url("{% static 'deps/images/star_yellow.png' %}");
+}
+
+</style>
+
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
@@ -16,7 +34,7 @@
 
         <title>Home</title>
     </head>
-
+    
     <body class="d-flex flex-column min-vh-100">
         <header>
             <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
@@ -60,53 +78,70 @@
                             <li class="nav-item">
                                 <a class="nav-link text-white" href="carts/cart.html">Корзина</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-white" href="users/login.html">Войти</a>
-                            </li>
-                            <li class="nav-item dropdown">
-                                <a
-                                    class="nav-link dropdown-toggle text-white"
-                                    href="#"
-                                    role="button"
-                                    data-bs-toggle="dropdown"
-                                    aria-expanded="false"
-                                >
-                                    Мой профиль
-                                    <img
-                                        class="mx-1 rounded-circle"
-                                        src="{% static 'deps/images/baseavatar.jpg' %}"
-                                        alt="Catalog Icon"
-                                        width="30"
-                                        height="30"
-                                        style="object-fit: cover"
-                                    />
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a class="dropdown-item text-white" href="carts/cart.html">Корзина</a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item text-white" href="users/profile.html">Личный кабинет</a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item text-white" href="{% url 'admin:index' %}">Админ панель</a>
-                                    </li>
-                                    <li>
-                                        <hr class="dropdown-divider" />
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item text-white" href="#">Выйти</a>
-                                    </li>
-                                </ul>
-                            </li>
+                            {% if not user.is_authenticated %}
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" href="{% url "users:login" %}">Войти</a>
+                                </li>
+                            {% else %}
+                                <li class="nav-item dropdown">
+                                    <a
+                                        class="nav-link dropdown-toggle text-white"
+                                        href="#"
+                                        role="button"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false"
+                                    >
+                                        Мой профиль
+                                        <img
+                                            class="mx-1 rounded-circle"
+                                            src="{% static 'deps/images/baseavatar.jpg' %}"
+                                            alt="Catalog Icon"
+                                            width="30"
+                                            height="30"
+                                            style="object-fit: cover"
+                                        />
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a class="dropdown-item text-white" href="carts/cart.html">Корзина</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item text-white" href="{% url "users:profile" %}">Личный кабинет</a>
+                                        </li>
+                                        {% if user.is_admin or user.is_staff %}
+                                            <li>
+                                                <a class="dropdown-item text-white" href="{% url 'admin:index' %}">Админ панель</a>
+                                            </li>
+                                        {% endif %}
+                                        
+                                        <li>
+                                            <hr class="dropdown-divider" />
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item text-white" href="{% url "users:logout" %}">Выйти</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            {% endif %}
+                            
                         </ul>
                     </div>
                 </div>
             </nav>
         </header>
+        <div class="position-relative d-flex flex-grow-1">
+            <div id="map" class="flex-fill"></div>
+            <!-- Контент поверх карты с абсолютным позиционированием -->
+            <div class="position-absolute top-0 start-0 w-100 h-100" style="z-index: 1000; pointer-events: none;">
+                <div style="pointer-events: auto;">
+                    {% block content %}
+                    {% endblock content %}
+                </div>
+            </div>
 
-        <div id="map" class="flex-fill"></div>
+        </div>
 
+        
 
         {% comment %} creating point sidebar {% endcomment %}
         <div class="offcanvas offcanvas-start offcanvas-map" tabindex="-1" id="creatingMapSidebar">
@@ -142,23 +177,59 @@
         {% comment %} created point sidebar {% endcomment %}
         <div class="offcanvas offcanvas-start offcanvas-map" tabindex="-1" id="mapSidebar">
             <div class="offcanvas-header">
-                <h5 class="offcanvas-title fs-3" id="pointName2"></h5>
+                <h5 class="offcanvas-title fs-3 flex-grow-1 text-center" id="pointName2"></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
             </div>
-            <div class="offcanvas-body d-flex flex-column">
-                <form id="pointForm2" class="flex-grow-1">
-                    <div class="mb-3">
-                        <!-- Ваше содержимое формы -->
-                    </div>
-                </form>
-                <div class="p-3 bg-dark text-white flex-grow-1 d-flex flex-column gap-2" id="commentsConteiner">
-                    
-                </div>
-                <form id="pointForm2">
-                    <div class="mb-3">
+            <div class="offcanvas-body d-flex flex-column" >
+                <form id="pointForm2" class="flex-grow-1 flex-column d-flex" style="min-width: 45%; min-height: 45%;">
+                    <div class="d-flex flex-grow-1">
+
+                    </div>    
+                    <div class="flex-row d-flex">
+                        <div style="display: none;">
+                            {% csrf_token %}
+                        </div>
+                        <p id="rating" class="fs-1"></p>
+                        <div id="imageStar1" class="image-wrapper" style="width: 10%; height: 10%;">
+                            <img src="{% static 'deps/images/star_white.png' %}" class="img-fluid hover-change" >
+                        </div>
                         
+                        <div id="imageStar2" class="image-wrapper" style="width: 10%; height: 10%;">
+                            <img src="{% static 'deps/images/star_white.png' %}" class="img-fluid hover-change" >
+                        </div>
+
+                        <div id="imageStar3" class="image-wrapper" style="width: 10%; height: 10%;">
+                            <img src="{% static 'deps/images/star_white.png' %}" class="img-fluid hover-change" >
+                        </div>
+
+                        <div id="imageStar4" class="image-wrapper" style="width: 10%; height: 10%;">
+                            <img src="{% static 'deps/images/star_white.png' %}" class="img-fluid hover-change" >
+                        </div>
+
+                        <div id="imageStar5" class="image-wrapper" style="width: 10%; height: 10%;">
+                            <img src="{% static 'deps/images/star_white.png' %}" class="img-fluid hover-change" >
+                        </div>
+                    </div>
+                    
+
+                </form>
+                
+                    
+                <div class="p-3 bg-dark text-white flex-grow-1 d-flex flex-column gap-2 overflow-auto text-break"  id="commentsConteiner">
+                    {% comment %} comments ......... {% endcomment %}
+                </div>
+
+                <form class="d-flex">
+                    <div style="display: none;">
+                        {% csrf_token %}
+                    </div>
+                    <div class="d-flex p-3 input-group mb-3">
+                        <input id="commentText" class="form-control" placeholder="Комментарий..."  aria-describedby="commentButton">
+                        <button class="btn btn-outline-secondary" type="button" id="commentButton">Отправить</button>
                     </div>
                 </form>
+                
+
             </div>
         </div>
 
@@ -208,18 +279,83 @@
 
                     let comments = await getComments(target.properties.get('hintContent'));
 
-                    let container = document.getElementById('commentsConteiner');
-                    
-                    let link;
                     for (let i = 0; i < comments.length; ++i) {
-                        link = document.createElement('a');
-                        //link.className = 'bg-light';
-                        link.textContent = comments[i].text;
-                        
-                        container.appendChild(link);
+
+                        showComment(comments[i].text);
                     }
 
+                    initAutoScroll();
+
+                    let review = await getReview(target.properties.get('hintContent'));
+
+                    document.getElementById('rating').textContent = review;
+
                 });
+            }
+
+            document.getElementById('commentButton').addEventListener('click', function () {
+                if (commentText.value != "") {
+                    fetch('api/addComment_api/', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json', 'X-CSRFToken': getCsrfToken()},
+                        body: JSON.stringify({  text: commentText.value, toiletName: document.getElementById('pointName2').textContent  })
+                    });
+                
+                showComment(commentText.value);
+                
+                document.getElementById('commentText').value = '';
+                
+                }
+            });
+
+            document.getElementById('commentText').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    document.getElementById('commentButton').click();
+                }
+            });
+
+            function showComment(Text) {
+                let container = document.getElementById('commentsConteiner');
+                let link = document.createElement('a');
+                link.textContent = Text;
+                container.appendChild(link);
+            }
+
+            function initAutoScroll() {
+                const commentsContainer = document.getElementById('commentsConteiner');
+      
+                commentsContainer.scrollTop = commentsContainer.scrollHeight;
+
+                const observer = new MutationObserver(function(mutations) {
+                    commentsContainer.scrollTop = commentsContainer.scrollHeight;
+                });
+
+                observer.observe(commentsContainer, {
+                    childList: true,
+                    subtree: true
+                });
+            }
+
+            async function getComments(currentToilet) {
+                let params = new URLSearchParams({
+                    'currentToilet': currentToilet,
+                });
+
+                let result0 = await fetch(`api/getcomments_api/?${params}`);
+                let result1 = await result0.json();
+
+                return result1;
+            }
+
+            async function getReview(currentToilet) {
+                let params = new URLSearchParams({
+                    'currentToilet': currentToilet,
+                });
+
+                let result0 = await fetch(`api/getReview_api/?${params}`);
+                let result1 = await result0.json();
+
+                return result1;
             }
 
             function loadAllMarkers() {
@@ -287,18 +423,112 @@
                 document.getElementById('coordLng').textContent = '';
             });
 
-            async function getComments(currentToilet) {
-                let params = new URLSearchParams({
-                    'currentToilet': currentToilet,
+            function star1Change() {
+                document.getElementById('imageStar1').classList.add('Change');
+            };
+            function star1Changed() {
+                document.getElementById('imageStar1').classList.remove('Change');
+            };
+            function star2Change() {
+                document.getElementById('imageStar2').classList.add('Change');
+            };
+            function star2Changed() {
+                document.getElementById('imageStar2').classList.remove('Change');
+            };
+            function star3Change() {
+                document.getElementById('imageStar3').classList.add('Change');
+            };
+            function star3Changed() {
+                document.getElementById('imageStar3').classList.remove('Change');
+            };
+            function star4Change() {
+                document.getElementById('imageStar4').classList.add('Change');
+            };
+            function star4Changed() {
+                document.getElementById('imageStar4').classList.remove('Change');
+            };
+
+            function starChange222() {
+                star1Change();
+                star2Change();
+            };
+            function starChange333() {
+                star1Change();
+                star2Change();
+                star3Change();
+            };
+            function starChange444() {
+                star1Change();
+                star2Change();
+                star3Change();
+                star4Change();
+            };
+
+            function starChanged222() {
+                star1Changed();
+                star2Changed();
+            };
+            function starChanged333() {
+                star1Changed();
+                star2Changed();
+                star3Changed();
+            };
+            function starChanged444() {
+                star1Changed();
+                star2Changed();
+                star3Changed();
+                star4Changed();
+            };
+            
+
+            document.getElementById('imageStar2').addEventListener('mouseover', star1Change);
+            document.getElementById('imageStar2').addEventListener('mouseout', star1Changed);
+            document.getElementById('imageStar3').addEventListener('mouseover', starChange222);
+            document.getElementById('imageStar3').addEventListener('mouseout', starChanged222);
+            document.getElementById('imageStar4').addEventListener('mouseover', starChange333);
+            document.getElementById('imageStar4').addEventListener('mouseout', starChanged333);
+            document.getElementById('imageStar5').addEventListener('mouseover', starChange444);
+            document.getElementById('imageStar5').addEventListener('mouseout', starChanged444);
+            
+            document.getElementById('imageStar1').addEventListener('click', function () {
+                fetch('api/addReview_api/', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json', 'X-CSRFToken': getCsrfToken()},
+                    body: JSON.stringify({  myReview: 1, toiletName: document.getElementById('pointName2').textContent  })
                 });
+            });
 
-                let result0 = await fetch(`api/comments_api/?${params}`);
-                let result1 = await result0.json();
+            document.getElementById('imageStar2').addEventListener('click', function () {
+                fetch('api/addReview_api/', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json', 'X-CSRFToken': getCsrfToken()},
+                    body: JSON.stringify({  myReview: 2, toiletName: document.getElementById('pointName2').textContent  })
+                });
+            });
 
-                return result1;
-            }
+            document.getElementById('imageStar3').addEventListener('click', function () {
+                fetch('api/addReview_api/', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json', 'X-CSRFToken': getCsrfToken()},
+                    body: JSON.stringify({  myReview: 3, toiletName: document.getElementById('pointName2').textContent  })
+                });
+            });
 
+            document.getElementById('imageStar4').addEventListener('click', function () {
+                fetch('api/addReview_api/', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json', 'X-CSRFToken': getCsrfToken()},
+                    body: JSON.stringify({  myReview: 4, toiletName: document.getElementById('pointName2').textContent  })
+                });
+            });
 
+            document.getElementById('imageStar5').addEventListener('click', function () {
+                fetch('api/addReview_api/', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json', 'X-CSRFToken': getCsrfToken()},
+                    body: JSON.stringify({  myReview: 5, toiletName: document.getElementById('pointName2').textContent  })
+                });
+            });
 
 
 

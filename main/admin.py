@@ -1,5 +1,5 @@
 from django.contrib import admin
-from main.models import Toilets, Comments
+from main.models import Toilets, Comments, Reviews
 # Register your models here.
 # admin.site.register(Comments)
 
@@ -10,4 +10,9 @@ class ToiletsAdmin(admin.ModelAdmin):
 
 @admin.register(Comments)
 class CommentsAdmin(admin.ModelAdmin):
+    prepopulated_fields = {}
+
+
+@admin.register(Reviews)
+class ReviewsAdmin(admin.ModelAdmin):
     prepopulated_fields = {}
