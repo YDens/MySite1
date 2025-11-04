@@ -3,7 +3,7 @@
 <div class="row">
     <div class="container mt-5">
         <div class="row justify-content-center">
-            <div class="col-md-9 bg-white p-4 mb-5 mx-2 rounded custom-shadow">
+            <div class="text-white col-md-9 glass-dark p-4 mb-5 mx-2 rounded-4">
                 <h2 class="text-center mb-4">Регистрация</h2>
                 <form action="{% url "user:registration" %}" method="post">
                     {% csrf_token %}
@@ -12,7 +12,7 @@
                             <label for="id_firstName" class="form-label">Имя*</label>
                             <input
                                 type="text"
-                                class="form-control"
+                                class="form-control glass-input"
                                 id="id_firstName"
                                 placeholder="Введите ваше имя"
                                 value = "{% if form.first_name.value %}
@@ -29,7 +29,7 @@
                             <label for="id_lastName" class="form-label">Фамилия*</label>
                             <input
                                 type="text"
-                                class="form-control"
+                                class="form-control glass-input"
                                 id="id_lastName"
                                 placeholder="Введите вашу фамилию"
                                 value = "{% if form.last_name.value %}
@@ -46,7 +46,7 @@
                             <label for="id_username" class="form-label">Имя пользователя*</label>
                             <input
                                 type="text"
-                                class="form-control"
+                                class="form-control glass-input"
                                 id="id_username"
                                 placeholder="Введите ваше имя пользователя"
                                 value = "{% if form.username.value %}
@@ -63,7 +63,7 @@
                             <label for="id_email" class="form-label">Email*</label>
                             <input
                                 type="email"
-                                class="form-control"
+                                class="form-control glass-input"
                                 id="id_email"
                                 placeholder="Введите ваш email"
                                 value = "{% if form.email.value %}
@@ -80,7 +80,7 @@
                             <label for="password1" class="form-label">Пароль*</label>
                             <input
                                 type="password"
-                                class="form-control"
+                                class="form-control glass-input"
                                 id="password1"
                                 placeholder="Введите пароль"
                                 name="password1"
@@ -94,7 +94,7 @@
                             <label for="password2" class="form-label">Подтверждение пароля*</label>
                             <input
                                 type="password"
-                                class="form-control"
+                                class="form-control glass-input"
                                 id="password2"
                                 placeholder="Подтвердите пароль"
                                 name="password2"

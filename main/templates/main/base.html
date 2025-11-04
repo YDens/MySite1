@@ -17,6 +17,111 @@
     content: url("{% static 'deps/images/star_yellow.png' %}");
 }
 
+
+.glass-dark {
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(15px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.125);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+/* Стили для input с размытым фоном */
+.glass-input {
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 0px  !important;
+    color: white !important;
+    transition: all 0.3s ease;
+}
+
+.glass-input::placeholder {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+/* Изменение цвета границы при фокусе */
+.glass-input:focus {
+    background: rgba(255, 255, 255, 0.15) !important;
+    border-color: rgba(255, 255, 255, 0.6) !important;
+    box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.15) !important;
+    color: white !important;
+    outline: none;
+}
+
+.glass-a {
+    color: rgba(255, 255, 255, 0.8) !important;
+    text-decoration: none;
+}
+
+
+.glass-offcanvas {
+    background: rgba(0, 0, 0, 0.3) !important;
+    backdrop-filter: blur(13px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-right: 0px ;
+    
+}
+
+.glass-input-offcanvas {
+    background: rgba(255, 255, 255, 0) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 0px  !important;
+    color: white !important;
+    transition: all 0.3s ease;
+}
+
+.glass-input-offcanvas::placeholder {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+/* Изменение цвета границы при фокусе */
+.glass-input-offcanvas:focus {
+    background: rgba(255, 255, 255, 0.15) !important;
+    border-color: rgba(255, 255, 255, 0.6) !important;
+    box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.15) !important;
+    color: white !important;
+    outline: none;
+}
+
+
+
+#commentsConteiner::-webkit-scrollbar {
+    width: 10px;
+}
+
+#commentsConteiner::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 5px;
+    margin: 2px;
+}
+
+#commentsConteiner::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border-radius: 5px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+#commentsConteiner::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
+}
+
+#commentsConteiner::-webkit-scrollbar-thumb:active {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+
+
+.carousel-image-center {
+    object-fit: cover;
+    object-position: center; /* ← Ключевое свойство */
+}
+
 </style>
 
 <html lang="en">
@@ -40,44 +145,8 @@
             <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
                 <div class="container-fluid">
                     <a class="navbar-brand" href="{% url 'main:index' %}">Карта твоих туалетов</a>
-                    <button
-                        class="navbar-toggler"
-                        type="button"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#navbarSupportedContent"
-                        aria-controls="navbarSupportedContent"
-                        aria-expanded="false"
-                        aria-label="Toggle navigation"
-                    >
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
                     <div class="d-flex flex-row-reverse" id="navbarSupportedContent">
-                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                            <li class="nav-item dropdown">
-                                <a
-                                    class="nav-link dropdown-toggle text-white"
-                                    href="#"
-                                    role="button"
-                                    data-bs-toggle="dropdown"
-                                    aria-expanded="false"
-                                >
-                                    Информация
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a class="dropdown-item text-white" href="#">Доставка и оплата</a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item text-white" href="#">Контактная информация</a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item text-white" href="#">Про нас</a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-white" href="carts/cart.html">Корзина</a>
-                            </li>
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0 ">
                             {% if not user.is_authenticated %}
                                 <li class="nav-item">
                                     <a class="nav-link text-white" href="{% url "users:login" %}">Войти</a>
@@ -92,19 +161,29 @@
                                         aria-expanded="false"
                                     >
                                         Мой профиль
+                                        {% if user.image %}
+                                    <img
+                                        class="mx-1 rounded-circle"
+                                        src="{{user.image.url}}"
+                                        alt="Icon"
+                                        width="30"
+                                        height="30"
+                                        style="object-fit: cover"
+                                        />
+                                    {% else %}
                                         <img
                                             class="mx-1 rounded-circle"
                                             src="{% static 'deps/images/baseavatar.jpg' %}"
-                                            alt="Catalog Icon"
+                                            alt="Icon"
                                             width="30"
                                             height="30"
                                             style="object-fit: cover"
                                         />
+                                    {% endif %}
+                                        
                                     </a>
                                     <ul class="dropdown-menu">
-                                        <li>
-                                            <a class="dropdown-item text-white" href="carts/cart.html">Корзина</a>
-                                        </li>
+                                        
                                         <li>
                                             <a class="dropdown-item text-white" href="{% url "users:profile" %}">Личный кабинет</a>
                                         </li>
@@ -132,26 +211,27 @@
         <div class="position-relative d-flex flex-grow-1">
             <div id="map" class="flex-fill"></div>
             <!-- Контент поверх карты с абсолютным позиционированием -->
-            <div class="position-absolute top-0 start-0 w-100 h-100" style="z-index: 1000; pointer-events: none;">
+             <div class="position-absolute top-0 start-0 w-100 h-100" style="z-index: 1000; pointer-events: none;">
                 <div style="pointer-events: auto;">
                     {% block content %}
                     {% endblock content %}
                 </div>
             </div>
+            
 
         </div>
 
         
 
         {% comment %} creating point sidebar {% endcomment %}
-        <div class="offcanvas offcanvas-start offcanvas-map" tabindex="-1" id="creatingMapSidebar">
-            <div class="offcanvas-header">
-                <h5 class="offcanvas-title">Создать точку</h5>
+        <div class="offcanvas offcanvas-start offcanvas-map glass-offcanvas" tabindex="-1" id="creatingMapSidebar">
+            <div class="offcanvas-header ">
+                <h3 class="offcanvas-title mx-5" style="color: white;">Создать точку</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
             </div>
-            <div class="offcanvas-body">
+            <div class="offcanvas-body ">
                 <div class="mb-3">
-                    <strong>Координаты:</strong>
+                    <strong class="glass-a">Координаты:</strong>
                     <div class="mt-1">
                         <span class="badge bg-secondary" id="coordLat"></span>
                         <span class="badge bg-secondary" id="coordLng"></span>
@@ -161,30 +241,76 @@
                 <form id="pointForm">
                     {% csrf_token %}
                     <div class="mb-3">
-                        <label class="form-label">Название точки</label>
-                        <input type="text" class="form-control" id="pointName" required />
+                        <label class="form-label glass-a">Название точки</label>
+                        <input type="text" class="form-control glass-input-offcanvas" id="pointName" required />
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Описание</label>
-                        <textarea class="form-control" id="pointDescription" rows="3"></textarea>
+                        <label class="form-label glass-a">Описание</label>
+                        <textarea class="form-control glass-input-offcanvas" id="pointDescription" rows="6"></textarea>
                     </div>
                 </form>
-                <button id="SaveButton" class="btn btn-primary w-100">Сохранить</button>
+                <div class="text-center">
+                    <button id="SaveButton" class="btn btn-dark btn-block " style="width: 85%" >Сохранить</button>
+                </div>
             </div>
         </div>
 
-        {% comment %} created point sidebar {% endcomment %}
-        <div class="offcanvas offcanvas-start offcanvas-map" tabindex="-1" id="mapSidebar">
-            <div class="offcanvas-header">
-                <h5 class="offcanvas-title fs-3 flex-grow-1 text-center" id="pointName2"></h5>
-                <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
-            </div>
-            <div class="offcanvas-body d-flex flex-column" >
-                <form id="pointForm2" class="flex-grow-1 flex-column d-flex" style="min-width: 45%; min-height: 45%;">
-                    <div class="d-flex flex-grow-1">
 
-                    </div>    
+        {% comment %} created point sidebar {% endcomment %}
+        <div class="offcanvas offcanvas-start offcanvas-map glass-offcanvas" tabindex="-1" id="mapSidebar">
+            
+            <div class="offcanvas-body d-flex flex-column p-0" >
+                
+                <div id="photo_and_name" class="d-flex position-relative" style="width: 100%; height:35%;">
+                    
+                    <div id="name" class="d-flex m-3 position-absolute bg-black" style="z-index: 10;">
+                        <h3 class="offcanvas-title mx-5" style="color: white;" id="pointName2"></h3>
+                    </div>
+                    <div id="carouselExampleControls" class="carousel slide d-flex w-100 h-100" data-bs-ride="carousel" style="z-index: 1;">
+                        <div class="carousel-inner">
+                            <div class="carousel-item active w-100 h-100">
+                            <img src="{% if user.image %}{{user.image.url}}{% else %}{% static 'deps/images/baseavatar.jpg' %}{% endif %}" class="d-block w-100 h-100 carousel-image-center"  alt="Аватар пользователя">
+                            </div>
+                            <div class="carousel-item w-100 h-100">
+                            <img src="{% static 'deps/images/baseavatar.jpg' %}" class="d-block w-100 h-100 carousel-image-center"  alt="Аватар пользователя">
+                            </div>
+                            <div class="carousel-item w-100 h-100">
+                            <img src="{% static 'deps/images/baseavatar.jpg' %}" class="d-block w-100 h-100 carousel-image-center"  alt="Аватар пользователя">
+                            </div>
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+                    {% comment %} <div id="photo" class="d-flex" style="width: 100%; height: 100%;">
+                        <input type="file" class="d-none" id="id_image" accept="image/*" name="image" />
+                        <!-- Делаем изображение кликабельным через label -->
+                        <label for="id_image" class="d-flex bg-black" style="width: 100%; height: 100%;">
+                            {% if user.image %}
+                                <img src="{{ user.image.url }}" 
+                                    alt="Аватар пользователя" 
+                                    class="w-100 h-100"
+                                    style="cursor: pointer; object-fit: cover; object-position: center;">
+                            {% else %}
+                                <img src="{% static 'deps/images/baseavatar.jpg' %}" 
+                                    alt="Аватар пользователя" 
+                                    class="w-100 h-100"
+                                    style="cursor: pointer; object-fit: cover; object-position: center;">
+                            {% endif %}
+                        </label>
+                    </div> {% endcomment %}
+
+                </div>
+                
+                
+                <form id="pointForm2" class="flex-column d-flex p-3" style="width: 100%; height: 10%;">
+                       
                     <div class="flex-row d-flex">
                         <div style="display: none;">
                             {% csrf_token %}
@@ -214,17 +340,17 @@
 
                 </form>
                 
-                    
-                <div class="p-3 bg-dark text-white flex-grow-1 d-flex flex-column gap-2 overflow-auto text-break"  id="commentsConteiner">
+                
+                <div class="flex-grow-1 mx-2 p-2 text-white d-flex flex-column gap-2 overflow-auto text-break align-items-start"  id="commentsConteiner">
                     {% comment %} comments ......... {% endcomment %}
                 </div>
-
-                <form class="d-flex">
+                
+                <form class="d-flex mt-auto p-3" >
                     <div style="display: none;">
                         {% csrf_token %}
                     </div>
                     <div class="d-flex p-3 input-group mb-3">
-                        <input id="commentText" class="form-control" placeholder="Комментарий..."  aria-describedby="commentButton">
+                        <input id="commentText" class="form-control glass-input-offcanvas" placeholder="Комментарий..."  aria-describedby="commentButton">
                         <button class="btn btn-outline-secondary" type="button" id="commentButton">Отправить</button>
                     </div>
                 </form>
@@ -316,8 +442,27 @@
 
             function showComment(Text) {
                 let container = document.getElementById('commentsConteiner');
-                let link = document.createElement('a');
+                let link = document.createElement('span');
                 link.textContent = Text;
+
+                Object.assign(link.style, {
+                    display: 'inline-block',
+                    background: 'rgba(39, 39, 39, 0.5)',
+                    backdropFilter: 'blur(10px)',
+                    WebkitBackdropFilter: 'blur(10px)',
+                    color: 'white',
+                    padding: '4px 10px',
+                    borderRadius: '15px',
+                    border: '0px ',
+                    fontSize: '15px',
+                    lineHeight: '1.7',
+                    width: 'fit-content',
+                    maxWidth: '100%',
+                    wordBreak: 'break-word',
+                    
+                });
+    
+                
                 container.appendChild(link);
             }
 
@@ -530,6 +675,8 @@
                 });
             });
 
+
+            
 
 
         </script>
